@@ -6,3 +6,5 @@
 - Fixed dynamic route warning by adding force-dynamic config to root page
 - Added Storybook with Button component and stories, updated .cursorrules with Storybook guidelines
 - Captured screenshot of Button component stories in Storybook
+- Completed initial setup for ACD file editor including file upload component, mock parser service, and basic UI structure.
+- Implemented LadderLogicEditor component with Monaco Editor, including Storybook stories and integration with the main page.
