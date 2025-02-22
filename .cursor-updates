@@ -8,3 +8,10 @@
 - Captured screenshot of Button component stories in Storybook
 - Completed initial setup for ACD file editor including file upload component, mock parser service, and basic UI structure.
 - Implemented LadderLogicEditor component with Monaco Editor, including Storybook stories and integration with the main page.
+- Researched ACD file parsing strategy, implemented binary reader with tests, and documented approach in acd-parser-research.md.
+- Implemented ladder logic parser with support for rungs, elements, and comments
+- Updated types to represent ladder logic structure with proper interfaces
+- Enhanced LadderLogicEditor to handle structured ladder logic data
+- Added tests for ladder logic parsing functionality
+- Fixed type errors in program parser initialization
+- Fixed server-side rendering issues with Monaco Editor by implementing dynamic imports and window object checks
