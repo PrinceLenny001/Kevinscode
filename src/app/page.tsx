@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from 'react';
-import { ACDFile, ACDLadderLogic } from '@/lib/types/acd';
+import { ACDFile, ACDLadderLogic, ACDTag } from '@/lib/types/acd';
 import { LadderLogicEditor } from '@/components/LadderLogicEditor';
+import { TagBrowser } from '@/components/TagBrowser';
 import { Upload } from 'lucide-react';
 
 export default function Home() {
@@ -27,7 +28,20 @@ export default function Home() {
             routines: [
               {
                 name: 'MainRoutine',
-                tags: [],
+                tags: [
+                  {
+                    name: 'Motor_Start',
+                    type: 'BOOL',
+                    scope: 'Local',
+                    description: 'Motor start command',
+                  },
+                  {
+                    name: 'Motor_Running',
+                    type: 'BOOL',
+                    scope: 'Local',
+                    description: 'Motor running status',
+                  },
+                ],
                 ladderLogic: {
                   rungs: [
                     {
@@ -37,6 +51,11 @@ export default function Home() {
                           type: 'XIC',
                           tag: 'Motor_Start',
                           position: { row: 0, col: 0 }
+                        },
+                        {
+                          type: 'OTE',
+                          tag: 'Motor_Running',
+                          position: { row: 0, col: 1 }
                         }
                       ]
                     }
@@ -46,7 +65,20 @@ export default function Home() {
             ]
           }
         ],
-        globalTags: []
+        globalTags: [
+          {
+            name: 'System_Ready',
+            type: 'BOOL',
+            scope: 'Global',
+            description: 'System ready status',
+          },
+          {
+            name: 'Emergency_Stop',
+            type: 'BOOL',
+            scope: 'Global',
+            description: 'Emergency stop status',
+          }
+        ]
       });
     };
     reader.readAsArrayBuffer(file);
@@ -79,10 +111,25 @@ export default function Home() {
     });
   };
 
+  const handleTagSelect = (tag: ACDTag) => {
+    // For now, just log the selected tag
+    console.log('Selected tag:', tag);
+  };
+
   const selectedLadderLogic = acdFile?.programs
     .find(p => p.name === selectedProgram)
     ?.routines.find(r => r.name === selectedRoutine)
     ?.ladderLogic;
+
+  const selectedRoutineTags = acdFile?.programs
+    .find(p => p.name === selectedProgram)
+    ?.routines.find(r => r.name === selectedRoutine)
+    ?.tags || [];
+
+  const allTags = acdFile ? [
+    ...selectedRoutineTags,
+    ...(acdFile.globalTags || [])
+  ] : [];
 
   return (
     <main className="container mx-auto p-4">
@@ -102,7 +149,7 @@ export default function Home() {
         </div>
 
         {acdFile && (
-          <div className="grid grid-cols-[250px_1fr] gap-8">
+          <div className="grid grid-cols-[250px_1fr_300px] gap-8">
             <div className="flex flex-col gap-4">
               <h2 className="text-lg font-semibold">Programs</h2>
               <div className="flex flex-col gap-2">
@@ -158,6 +205,13 @@ export default function Home() {
                   </p>
                 </div>
               )}
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <TagBrowser
+                tags={allTags}
+                onTagSelect={handleTagSelect}
+              />
             </div>
           </div>
         )}
