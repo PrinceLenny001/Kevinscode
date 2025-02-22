@@ -15,3 +15,6 @@
 - Added tests for ladder logic parsing functionality
 - Fixed type errors in program parser initialization
 - Fixed server-side rendering issues with Monaco Editor by implementing dynamic imports and window object checks
+- Implemented drag-and-drop ladder logic editing with graphical representation using @dnd-kit/core
+- Added dual-mode editing (text and diagram) to LadderLogicEditor component
+- Removed authentication requirements and simplified application structure by removing NextAuth, protected routes, and user management

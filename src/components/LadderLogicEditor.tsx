@@ -1,9 +1,10 @@
 "use client";
 
 import { useCallback, useState, useEffect } from 'react';
-import { Save } from 'lucide-react';
+import { Save, Code, Grid2X2 } from 'lucide-react';
 import { ACDLadderLogic, ACDElementType } from '@/lib/types/acd';
 import { DynamicEditor } from './DynamicEditor';
+import { LadderLogicDiagram } from './LadderLogicDiagram';
 import { toast } from 'react-toastify';
 
 interface LadderLogicEditorProps {
@@ -21,6 +22,7 @@ export const LadderLogicEditor = ({ initialValue = { rungs: [] }, onSave }: Ladd
   const [value, setValue] = useState(initialValue);
   const [isEditing, setIsEditing] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+  const [mode, setMode] = useState<'text' | 'diagram'>('diagram');
 
   useEffect(() => {
     // Dynamically import and register the language
@@ -127,6 +129,12 @@ export const LadderLogicEditor = ({ initialValue = { rungs: [] }, onSave }: Ladd
     }
   }, [textToLadderLogic]);
 
+  const handleDiagramChange = useCallback((newValue: ACDLadderLogic) => {
+    setValue(newValue);
+    setIsEditing(true);
+    setErrors([]);
+  }, []);
+
   const handleSave = useCallback(() => {
     if (errors.length > 0) {
       toast.error('Cannot save ladder logic with errors');
@@ -141,35 +149,68 @@ export const LadderLogicEditor = ({ initialValue = { rungs: [] }, onSave }: Ladd
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">Ladder Logic Editor</h3>
-        {isEditing && (
-          <button
-            onClick={handleSave}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-            disabled={errors.length > 0}
-          >
-            <Save className="w-4 h-4" />
-            Save Changes
-          </button>
-        )}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 border rounded-lg overflow-hidden">
+            <button
+              onClick={() => setMode('diagram')}
+              className={`flex items-center gap-2 px-4 py-2 ${
+                mode === 'diagram'
+                  ? 'bg-blue-500 text-white'
+                  : 'hover:bg-gray-100'
+              }`}
+            >
+              <Grid2X2 className="w-4 h-4" />
+              Diagram
+            </button>
+            <button
+              onClick={() => setMode('text')}
+              className={`flex items-center gap-2 px-4 py-2 ${
+                mode === 'text'
+                  ? 'bg-blue-500 text-white'
+                  : 'hover:bg-gray-100'
+              }`}
+            >
+              <Code className="w-4 h-4" />
+              Text
+            </button>
+          </div>
+          {isEditing && (
+            <button
+              onClick={handleSave}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+              disabled={errors.length > 0}
+            >
+              <Save className="w-4 h-4" />
+              Save Changes
+            </button>
+          )}
+        </div>
       </div>
       <div className="h-[500px] border rounded-lg overflow-hidden">
-        <DynamicEditor
-          height="100%"
-          defaultLanguage="ladderLogic"
-          theme="ladderLogic"
-          value={ladderLogicToText(value)}
-          onChange={handleEditorChange}
-          options={{
-            minimap: { enabled: false },
-            lineNumbers: 'on',
-            scrollBeyondLastLine: false,
-            wordWrap: 'on',
-            automaticLayout: true,
-            renderWhitespace: 'all',
-            formatOnPaste: true,
-            formatOnType: true,
-          }}
-        />
+        {mode === 'text' ? (
+          <DynamicEditor
+            height="100%"
+            defaultLanguage="ladderLogic"
+            theme="ladderLogic"
+            value={ladderLogicToText(value)}
+            onChange={handleEditorChange}
+            options={{
+              minimap: { enabled: false },
+              lineNumbers: 'on',
+              scrollBeyondLastLine: false,
+              wordWrap: 'on',
+              automaticLayout: true,
+              renderWhitespace: 'all',
+              formatOnPaste: true,
+              formatOnType: true,
+            }}
+          />
+        ) : (
+          <LadderLogicDiagram
+            value={value}
+            onChange={handleDiagramChange}
+          />
+        )}
       </div>
       {errors.length > 0 && (
         <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">

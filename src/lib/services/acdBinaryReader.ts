@@ -24,7 +24,7 @@ export interface ACDSection {
 export class ACDBinaryReader {
   private buffer: Buffer;
 
-  constructor(arrayBuffer: ArrayBuffer) {
+  constructor(arrayBuffer: ArrayBuffer | ArrayBufferLike) {
     this.buffer = Buffer.from(arrayBuffer);
   }
 
@@ -67,7 +67,8 @@ export class ACDBinaryReader {
           metadata = JSON.parse(metadataStr);
         }
       } catch (e) {
-        console.warn('Failed to parse metadata:', e);
+        // If metadata parsing fails, just use an empty object
+        metadata = {};
       }
 
       return {
