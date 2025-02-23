@@ -18,3 +18,6 @@
 - Implemented drag-and-drop ladder logic editing with graphical representation using @dnd-kit/core
 - Added dual-mode editing (text and diagram) to LadderLogicEditor component
 - Removed authentication requirements and simplified application structure by removing NextAuth, protected routes, and user management
+- Enhanced root page with a welcoming landing page, feature list, and improved dark mode support
+- Added dual-mode editing in LadderLogicEditor component with text and graphical views
+- Removed authentication requirements and simplified application structure
